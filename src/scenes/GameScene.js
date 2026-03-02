@@ -77,7 +77,6 @@ export class GameScene extends Phaser.Scene {
 
     createPlayer() {
         this.player = new Player(this, Math.floor(COLS / 2), 0);
-        this.player.setDepth(30);
     }
 
     createGoalSlots() {
@@ -210,6 +209,7 @@ export class GameScene extends Phaser.Scene {
 
         this.playerOnPlatform = null;
         this.player.isMoving = true;
+        this.player.onMoveStart(dx, dy);
 
         const destination = gridToWorld(targetX, targetY);
         this.tweens.add({
@@ -222,6 +222,7 @@ export class GameScene extends Phaser.Scene {
                 this.player.gridX = targetX;
                 this.player.gridY = targetY;
                 this.player.isMoving = false;
+                this.player.onMoveEnd();
 
                 this.evaluatePlayerPosition();
                 this.emitHud();
@@ -346,7 +347,8 @@ export class GameScene extends Phaser.Scene {
         this.gameState = GAME_STATE.DYING;
         this.playerOnPlatform = null;
         this.lives -= 1;
-        this.player.setFillStyle(0xb91c1c);
+        this.player.clearTint();
+        this.player.playDeathAnimation(this.getDeathAnimationType(reason));
         this.events.emit("status-message", reason);
         this.emitHud();
 
@@ -369,7 +371,8 @@ export class GameScene extends Phaser.Scene {
         if (resetTimer) {
             this.timerMsRemaining = this.timerBaseMs;
         }
-        this.player.setFillStyle(0x22c55e);
+        this.player.clearTint();
+        this.player.onMoveEnd();
 
         this.time.delayedCall(250, () => {
             this.gameState = GAME_STATE.PLAYING;
@@ -454,6 +457,14 @@ export class GameScene extends Phaser.Scene {
         this.timerMsRemaining = this.timerBaseMs;
         this.playerOnPlatform = null;
         this.laneSystems = [];
+    }
+
+    getDeathAnimationType(reason) {
+        if (reason === "Fell into water" || reason === "Swept offscreen") {
+            return "water";
+        }
+
+        return "road";
     }
 
     getHudState() {
