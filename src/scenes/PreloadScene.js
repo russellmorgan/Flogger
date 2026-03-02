@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import playerSpritesheetUrl from "../img/player_spritesheet.png";
 
 export class PreloadScene extends Phaser.Scene {
     constructor() {
@@ -6,7 +7,7 @@ export class PreloadScene extends Phaser.Scene {
     }
 
     preload() {
-        this.load.spritesheet("player-frog", "src/img/player_spritesheet.png", {
+        this.load.spritesheet("player-frog", playerSpritesheetUrl, {
             frameWidth: 256,
             frameHeight: 256
         });
