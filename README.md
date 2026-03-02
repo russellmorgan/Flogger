@@ -1,6 +1,6 @@
 # Flogger
 
-Frogger clone built with Phaser 3.
+A Frogger clone built with Phaser 3 with codex 5.3.
 
 ## Local Development
 
